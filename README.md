@@ -10,7 +10,9 @@ How to install (Python):
 2. Select the latest version and click install
 
 How to install (selenium):
+
 1.Go to terminal/CMD and run as administrator
+
 2.type in the panel: pip install selenium - pip install selenium faker report lab
 
 To run the program just copy and paste the code and run it on vs code it will automatically open a chrome clone in the browser and to the automation
