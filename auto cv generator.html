@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Resume Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #preview {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .resume-header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .resume-header h1 {
+            margin: 0;
+        }
+        .resume-section {
+            margin-bottom: 20px;
+        }
+        .resume-section h2 {
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .education-item, .experience-item {
+            margin-bottom: 15px;
+        }
+        .education-item h3, .experience-item h3 {
+            margin: 0;
+        }
+        .education-item p, .experience-item p {
+            margin: 5px 0;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <h1>Fake Resume Generator</h1>
+    <p>Click "Generate" to create a randomized resume based on the provided CV structure. Preview will appear below. Then click "Download PDF" to save it as a PDF.</p>
+    <button onclick="generateResume()">Generate</button>
+    <button onclick="downloadPDF()" id="downloadBtn" disabled>Download PDF</button>
+    
+    <div id="preview"></div>
+
+    <script>
+        // Arrays for randomization
+        const firstNames = ['Martin', 'John', 'Jane', 'Alex', 'Emily', 'Michael', 'Sarah', 'David', 'Laura', 'James'];
+        const middleInitials = ['J.', 'A.', 'B.', 'C.', 'D.', 'E.', 'F.', 'H.', 'K.', 'M.'];
+        const lastNames = ['Gaspar', 'Doe', 'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
+        
+        const streets = ['Virgen Milagrosa Homes', 'Main Street', 'Oak Avenue', 'Pine Road', 'Elm Lane', 'Cedar Blvd', 'Maple Drive', 'Birch Way', 'Willow Path', 'Spruce Terrace'];
+        const areas = ['Borol 2nd', 'Downtown', 'Uptown', 'Suburbia', 'Riverside', 'Hillside', 'Lakeside', 'Forestview', 'Meadowbrook', 'Sunnyvale'];
+        const cities = ['Balagtas', 'Malolos City', 'Bocaue', 'Baliwag', 'Manila', 'Quezon City', 'Makati', 'Cebu City', 'Davao City', 'Baguio'];
+        const provinces = ['Bulacan', 'Metro Manila', 'Cebu', 'Davao del Sur', 'Benguet', 'Laguna', 'Batangas', 'Pampanga', 'Tarlac', 'Nueva Ecija'];
+        const zipCodes = ['3016', '1000', '3000', '6000', '8000', '2600', '4026', '2000', '2300', '3100'];
+        
+        const universities = ['Bulacan State University', 'University of the Philippines', 'Ateneo de Manila', 'De La Salle University', 'Mapua University', 'Far Eastern University', 'Adamson University', 'Technological University of the Philippines', 'Polytechnic University of the Philippines', 'University of Santo Tomas'];
+        const degrees = ['Bachelor of Industrial Technology Major in Computer', 'Bachelor of Science in Computer Science', 'Bachelor of Science in Information Technology', 'Bachelor of Engineering in Computer Engineering', 'Bachelor of Science in Software Engineering'];
+        const awards = ['Dean Lister, Gold Gear Awardee', 'With Honors, Outstanding Scholastic Reader', 'Cum Laude, Best Thesis Award', 'Magna Cum Laude, Leadership Award', 'Scholarship Recipient, Innovation Award'];
+        const coursework = ['Industrial Designing, Python, Java, Graphic Designing, Arduino, Raspberry Pi, ESP32, Web Development, Database Management, PHP', 'Web Development, Python, Java, Graphic Designing, Unity Game Development, 2D Design', 'Data Structures, Algorithms, Machine Learning, Cybersecurity, Cloud Computing', 'Software Engineering, Networking, AI, Mobile App Development, UI/UX Design'];
+        
+        const highSchools = ['Dr. Yanga’s Colleges Inc.', 'Manila Science High School', 'Philippine Science High School', 'Quezon City Science High School', 'Makati High School'];
+        const hsMajors = ['Senior High School - Information and Communication Technology (ICT)', 'Senior High School - STEM Strand', 'Senior High School - Accountancy, Business and Management', 'Senior High School - Humanities and Social Sciences'];
+        
+        const companies = ['Panrama Technologies', 'Tech Innovations Inc.', 'Global Solutions Ltd.', 'Digital Ventures Co.', 'Software Masters', 'Web Wizards', 'App Developers Corp.', 'IT Pioneers', 'Code Crafters', 'Data Dynamics'];
+        const locations = ['Baliwag, Bulacan', 'Manila', 'Quezon City', 'Makati', 'Cebu City', 'Davao City', 'Baguio', 'Laguna', 'Batangas', 'Pampanga'];
+        const positions = ['Intern', 'Junior Developer', 'Software Engineer', 'Web Designer', 'Database Administrator', 'Graphic Artist', 'Project Coordinator', 'IT Support Specialist', 'App Tester', 'UI/UX Designer'];
+        const dateRanges = ['June 2024 – February 2025', 'January 2023 – Present', 'March 2022 – December 2023', 'September 2021 – August 2022', 'May 2020 – April 2021'];
+        const bullets = [
+            'Designed and developed company website using HTML, CSS, JavaScript, and responsive frameworks, ensuring a user-friendly, cross-device experience.',
+            'Improved scalable SQL database for employee attendance tracking, enabling real-time monitoring and accurate payroll processing.',
+            'Designed posters with design tools to promote products and services.',
+            'Designed, print-ready T-shirts using design software, ensuring they are suited for modern teens.',
+            'Created logos for clients and iterated the designs.',
+            'Developed mobile apps using React Native and integrated APIs.',
+            'Optimized website performance, reducing load times by 30%.',
+            'Managed team projects using Agile methodologies.',
+            'Conducted code reviews and implemented best practices.',
+            'Created data visualizations using Tableau and Python libraries.'
+        ];
+        
+        const certifications = [
+            'Introduction to HTML – Simplilearn',
+            'Networking Basics – Cisco',
+            'Python Essentials 1 – Cisco',
+            'Computer System Servicing NCII – TESDA',
+            'AWS Certified Developer',
+            'Google IT Support Professional',
+            'Microsoft Azure Fundamentals',
+            'CompTIA A+',
+            'Oracle Java SE Programmer',
+            'Adobe Certified Expert in Photoshop'
+        ];
+        
+        const projects = [
+            'Winner Winner mango ginger – a study on how mango ginger prolongs meat shelf storage.',
+            'Panramatechnologies.com – published website for the company panrama technologies.',
+            'Frequency of Engagement in Online Games as Related to Mental Health Status among Gen Z Youth in DYCI – study on how gaming affects mental health on Dr. yanga’s colleges INC.',
+            'Bridging The Communication Gap: Developing a Real-Time FSL Hand Recognition System with text-to-speech.',
+            'AI-Powered Chatbot for Customer Service.',
+            'E-Commerce Platform with Payment Integration.',
+            'Machine Learning Model for Image Classification.',
+            'Blockchain-Based Voting System.',
+            'IoT Device for Smart Home Automation.',
+            'Virtual Reality Game Prototype.'
+        ];
+
+        function randomChoice(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function randomEmail(first, last) {
+            return `${first.toLowerCase()}${last.toLowerCase()}${Math.floor(Math.random() * 1000)}@gmail.com`;
+        }
+
+        function randomPhone() {
+            return `09${Math.floor(Math.random() * 1000000000).toString().padStart(9, '0')}`;
+        }
+
+        function generateResume() {
+            const first = randomChoice(firstNames);
+            const middle = randomChoice(middleInitials);
+            const last = randomChoice(lastNames);
+            const name = `${first} ${middle} ${last}`;
+            const address = `${randomChoice(streets)}, ${randomChoice(areas)} • ${randomChoice(cities)}, ${randomChoice(provinces)} ${randomChoice(zipCodes)}`;
+            const email = randomEmail(first, last);
+            const phone = randomPhone();
+
+            // Education
+            const uni = randomChoice(universities);
+            const uniCity = randomChoice(cities);
+            const uniProv = randomChoice(provinces);
+            const degree = randomChoice(degrees);
+            const uniAwards = `${randomChoice(awards)} ${Math.floor(Math.random() * 5) + 2018}-present`;
+            const uniCoursework = randomChoice(coursework);
+
+            const hs = randomChoice(highSchools);
+            const hsCity = randomChoice(cities);
+            const hsProv = randomChoice(provinces);
+            const hsMajor = randomChoice(hsMajors);
+            const hsYears = `${Math.floor(Math.random() * 5) + 2015}-${Math.floor(Math.random() * 5) + 2020}`;
+            const hsAwards = randomChoice(awards);
+            const hsCoursework = randomChoice(coursework);
+
+            // Experience
+            const exp1Company = randomChoice(companies);
+            const exp1Loc = `${randomChoice(cities)}, ${randomChoice(provinces)}`;
+            const exp1Pos = randomChoice(positions);
+            const exp1Dates = randomChoice(dateRanges);
+            const exp1Bullets = [randomChoice(bullets), randomChoice(bullets), randomChoice(bullets)];
+
+            const exp2Company = randomChoice(companies);
+            const exp2Loc = `${randomChoice(cities)}, ${randomChoice(provinces)}`;
+            const exp2Pos = 'Part-Time';
+            const exp2Dates = randomChoice(dateRanges);
+            const exp2Bullets = [randomChoice(bullets), randomChoice(bullets)];
+
+            // Certifications
+            const certs = [];
+            for (let i = 0; i < 4; i++) {
+                certs.push(randomChoice(certifications));
+            }
+
+            // Projects
+            const projs = [];
+            for (let i = 0; i < 4; i++) {
+                projs.push(randomChoice(projects));
+            }
+
+            // Render to HTML
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <div class="resume-header">
+                    <h1>${name}</h1>
+                    <p>${address} • ${email} • ${phone}</p>
+                </div>
+                
+                <div class="resume-section">
+                    <h2>Education</h2>
+                    <div class="education-item">
+                        <h3>${uni}</h3>
+                        <p>${uniCity}, ${uniProv}</p>
+                        <p>${degree}</p>
+                        <p>Awards: ${uniAwards}</p>
+                        <p>Relevant Coursework: ${uniCoursework}</p>
+                    </div>
+                    <div class="education-item">
+                        <h3>${hs}</h3>
+                        <p>${hsCity}, ${hsProv}</p>
+                        <p>${hsMajor} ${hsYears}</p>
+                        <p>Awards: ${hsAwards}</p>
+                        <p>Relevant coursework: ${hsCoursework}</p>
+                    </div>
+                </div>
+                
+                <div class="resume-section">
+                    <h2>Experience</h2>
+                    <div class="experience-item">
+                        <h3>${exp1Company}</h3>
+                        <p>${exp1Loc}</p>
+                        <p>${exp1Pos} ${exp1Dates}</p>
+                        <ul>
+                            <li>${exp1Bullets[0]}</li>
+                            <li>${exp1Bullets[1]}</li>
+                            <li>${exp1Bullets[2]}</li>
+                        </ul>
+                    </div>
+                    <div class="experience-item">
+                        <h3>${exp2Company}</h3>
+                        <p>${exp2Loc}</p>
+                        <p>${exp2Pos} ${exp2Dates}</p>
+                        <ul>
+                            <li>${exp2Bullets[0]}</li>
+                            <li>${exp2Bullets[1]}</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="resume-section">
+                    <h2>Certifications</h2>
+                    <ul>
+                        ${certs.map(cert => `<li>${cert}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="resume-section">
+                    <h2>Projects & Works</h2>
+                    <ul>
+                        ${projs.map(proj => `<li>${proj}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('preview');
+            html2pdf().from(element).save('fake_resume.pdf');
+        }
+    </script>
+</body>
+</html>
