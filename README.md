@@ -1,9 +1,6 @@
 # Selinuim-Automation-
 
-Selenium Automation Basic Installation Guide:
-1. Must Have python (lastest version)
-2. Must Have Selinuim (latest version)
-3. Must Have VS code
+You must Download first all the neccessary libraries for it to work
 
 How to install (Python):
 1. Go to Python.org
