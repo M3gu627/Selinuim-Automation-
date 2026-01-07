@@ -23,5 +23,7 @@ How to install(Pyuagui):
 To run the program just copy and paste the code and run it on vs code it will automatically open a chrome clone in the browser and to the automation
 comments are present in the code and will indicate lines that will need adjustment if ever the Xpath or UI/UX related is changed 
 
+The github page also serves as a CV Randomizer were it is linked to https://docs.google.com/spreadsheets/d/1XqBXnx0y3dwgDSoCfWga5i_niPh1wKCTIiK5r31Bj_Q/edit?gid=0#gid=0
+
 (Note: CTRL + C in the terminal to terminate the run)
 
