@@ -22,4 +22,4 @@ comments are present in the code and will indicate lines that will need adjustme
 
 
 (Note: CTRL + C in the terminal to terminate the run)
-(Feel free to Modify the CV Randomizer Table)
+(Feel free to Modify the CV Randomizer Table (index.html))
