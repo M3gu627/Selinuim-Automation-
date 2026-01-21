@@ -21,5 +21,6 @@ To run the program just copy and paste the code and run it on vs code it will au
 comments are present in the code and will indicate lines that will need adjustment if ever the Xpath or Filepath needed to be changed.
 
 
+(if the trial has been exhausted in your email just use the syntax trick to make a new one ex: martingasper627@gmail.com -> m.artingasper627@gmail.com)
 (Note: CTRL + C in the terminal to terminate the run)
 (Feel free to Modify the CV Randomizer Table (index.html))
